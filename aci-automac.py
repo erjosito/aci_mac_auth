@@ -20,6 +20,7 @@
 ################################################################################
 """
 Jose Moreno, josemor@cisco.com, aci-automac v0.2, June 2015
+Matthias Wessendorf matze@cisco.com aci-automac v0.3 June 2015
 
 Simple application that logs on to the APIC and monitors EP attach/dettach
 events. It will compare the MAC address of the EP being connected with a
@@ -62,7 +63,7 @@ def apiclogin(apicurl, username, password):
     try:
         r = requests.post(
                           url=apicurl+"/api/aaaLogin.xml",
-                          data = '<aaaUser name=\"'+username+'\" pwd=\"'+password+'\" />')
+                          data = '<aaaUser name=\"'+username+'\" pwd=\"'+password+'\" />', verify=False)
         return r.cookies
     except requests.exceptions.RequestException as e:
         print('Login HTTP Request failed')
@@ -135,7 +136,7 @@ def load_mac_list():
          with open(mac_list_file) as json_file:
             return json.load(json_file)
       except:
-         print "Error loading data from %s" % filename
+         print "Error loading data from %s" % mac_list_file
 
 # Saves the MAC/EPG bindings to disk
 def save_mac_list(mac_list):
@@ -145,7 +146,7 @@ def save_mac_list(mac_list):
        configfile.write (jsonstring)
        configfile.close()
      except:
-       print "Error writing to %s" % filename
+       print "Error writing to %s" % mac_list_file
 
 # Dumps the mac_list to stdout
 def print_mac_list (mac_list):
